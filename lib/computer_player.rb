@@ -1,32 +1,28 @@
 require_relative "./player"
 
 class ComputerPlayer < Player 
-  attr_accessor :marker
+  attr_accessor :marker, :name
 
   def initialize 
     super
+    @name = "Machine"
     @marker = "X"
   end
 
-  def get_user_input
-    num1 = nil
-    num2 = nil
-    
-    loop do
-      puts "Enter row number (between 0 and 2)"
-      num1 = gets.chomp.to_i
-      break if num1.between?(0, 2)
-      puts "Please enter a number between 0 and 2"
+  def get_user_input(players)
+    num1 = Random.rand(3)
+    num2 = Random.rand(3)
+    until spot_available?(players, [num1, num2])
+      num1 = Random.rand(3)
+      num2 = Random.rand(3)
     end
-
-    loop do
-      puts "Enter column number (between 0 and 2)"
-      num2 = gets.chomp.to_i
-      break if num2.between?(0, 2)
-      puts "Please enter a number between 0 and 2"
-    end
-
     place_marker([num1, num2])
+  end
+
+  private
+
+  def spot_available?(players, selection)
+    !players[0].selections.include?(selection) && !players[1].selections.include?(selection)
   end
 
   def place_marker(arr)
